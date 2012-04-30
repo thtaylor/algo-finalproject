@@ -15,12 +15,31 @@ class Partitioner
       graph.prims metric
       
       edges = graph.cut! num_sets
-      pp create_partitions_from_edges edges
+      create_and_print_partitions_from_edges edges
     end
 
-    def create_partitions_from_edges edges
+    def create_and_print_partitions_from_edges edges
       partitions = []
-      
+      i = 0
+      current_partition = 0
+      until i >= edges.size
+        partitions << []
+        partitions[current_partition] << edges[i]
+        while edges[i+1] && edges[i+1].a == edges[i].b
+          i += 1
+          partitions[current_partition] << edges[i]
+        end
+        i+=1
+        current_partition +=1
+      end
+      partitions.each do |partition|
+        vertices = []
+        partition.each do |edge|
+          vertices << edge.a
+          vertices << edge.b
+        end
+        puts "{#{vertices.uniq.join ','}}"
+      end
     end
   end
 end

@@ -37,12 +37,9 @@ class Graph
     distances[@points_by_name.first.first] = 0
 
     until queue.empty?
-      pp queue
       u = queue.pop
       u.edges.keys.sort.each do |v|
         v = @points_by_name[v]
-        puts "U: #{u.name}, V: #{v.name}"
-        puts " parents[#{v.name}]=#{parents[v.name]}"
         if colors[v.name] == :white
           colors[v.name] = :grey
           queue.push @points_by_name[v.name]#, distances[v.name]
@@ -55,7 +52,6 @@ class Graph
             parents[v.name] = u.name
           end
         end
-        puts "  parents[#{v.name}]=#{parents[v.name]}"
       end
       colors[u.name] = :black
     end
