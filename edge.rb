@@ -8,10 +8,15 @@ class Edge
   end
 
   def weight
-    @a.distance_to @b
+    return @weight if @weight
+    @weight = @a.distance_to @b
   end
 
   def to_s
     "Edge: (#{@a.to_s}, #{@b.to_s})"
+  end
+
+  def <=> other
+    weight <=> other.weight
   end
 end

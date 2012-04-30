@@ -12,9 +12,15 @@ class Partitioner
       num_sets, metric, points = Parser.parse! filename
       points = points.each_with_index.map {|p, i| Point.new i, *p }
       graph = Graph.new points
-      pp graph.prims metric
+      graph.prims metric
       
-      #graph.cut! num_sets
+      edges = graph.cut! num_sets
+      pp create_partitions_from_edges edges
+    end
+
+    def create_partitions_from_edges edges
+      partitions = []
+      
     end
   end
 end

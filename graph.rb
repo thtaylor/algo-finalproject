@@ -30,18 +30,22 @@ class Graph
       distances[name] = 1.0/0
     end
 
-    queue = PriorityQueue.new {|x, y| (x <=> y) == 1}
+    #queue = PriorityQueue.new {|x, y| (x <=> y) == 1}
+    queue = Queue.new
     colors[@points_by_name.first.first] = :grey
-    queue.push @points_by_name.first.last, 0
+    queue.push @points_by_name.first.last#, 0
     distances[@points_by_name.first.first] = 0
 
     until queue.empty?
+      pp queue
       u = queue.pop
-      u.edges.keys.each do |v|
+      u.edges.keys.sort.each do |v|
         v = @points_by_name[v]
+        puts "U: #{u.name}, V: #{v.name}"
+        puts " parents[#{v.name}]=#{parents[v.name]}"
         if colors[v.name] == :white
           colors[v.name] = :grey
-          queue.push @points_by_name[v.name], distances[v.name]
+          queue.push @points_by_name[v.name]#, distances[v.name]
           distances[v.name] = u.distance_to v, :type => metric
           parents[v.name] = u.name
         elsif colors[v.name] == :grey
@@ -51,6 +55,7 @@ class Graph
             parents[v.name] = u.name
           end
         end
+        puts "  parents[#{v.name}]=#{parents[v.name]}"
       end
       colors[u.name] = :black
     end
@@ -68,25 +73,21 @@ class Graph
   ##   2) Severing the edges that are the longest
   ##      that still leaves at least two vertices
   ##      in a partition
-  ## The method returns an array of arrays
-  ## of the format:
-  ##
-  ##   [
-  ##     [partition 1],
-  ##     [partition 2],
-  ##     [partition 3],
-  ##     etc...
-  ##   ]
-  ## where each partition is at least two vertices
+  ## The method returns an array of edges
   ##########################
   def cut! k
     return false unless @minimum_spanning_tree
     edges = []
     @minimum_spanning_tree.each do |point, other|
-      edges << Edge.new point, other
+      edges << Edge.new(@points_by_name[other], @points_by_name[point])
     end
+
+    edges = edges.sort {|x, y| y <=> x}
+
     (k-1).times do |i|
-      
+      edges.delete edges.first
     end
+
+    edges
   end
 end
