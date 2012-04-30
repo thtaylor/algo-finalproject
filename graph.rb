@@ -26,13 +26,13 @@ class Graph
     parents = {}
 
     @points_by_name.each_pair do |name, point| 
-      colors[name] = :white]
+      colors[name] = :white
       distances[name] = 1.0/0
     end
 
-    queue = PriorityQueue.new {|x, y| (x <=> y) == -1}
+    queue = PriorityQueue.new {|x, y| (x <=> y) == 1}
     colors[@points_by_name.first.first] = :grey
-    queue << @points_by_name.first.last
+    queue.push @points_by_name.first.last, 0
     distances[@points_by_name.first.first] = 0
 
     until queue.empty?
@@ -44,19 +44,19 @@ class Graph
           queue.push @points_by_name[v.name], distances[v.name]
           distances[v.name] = u.distance_to v, :type => metric
           parents[v.name] = u.name
-        elsif colors[u.name] == :grey
-          if distances[v.name] > u.distance_to(v, :type => metric)
-            distances[v.name] = u.distance_to(v, :type => metric)
+        elsif colors[v.name] == :grey
+          alt = u.distance_to(v, :type => metric)
+          if distances[v.name] > alt
+            distances[v.name] = alt
             parents[v.name] = u.name
           end
         end
-        colors[v.name] = black
       end
-
-      parents
+      colors[u.name] = :black
     end
 
-
+    @minimum_spanning_tree = parents
+  end
 
   ##########################
   ## Accepting an integer, k, this
@@ -75,59 +75,18 @@ class Graph
   ##     [partition 1],
   ##     [partition 2],
   ##     [partition 3],
-  ##     etc.
+  ##     etc...
   ##   ]
   ## where each partition is at least two vertices
   ##########################
   def cut! k
     return false unless @minimum_spanning_tree
-    @minimum_spanning_tree.each 
-    (k-1).times do |i|
-
-    end
-  end
-
-  def prims metric
-    starting_point = @points_by_name.first.last
-    treed = [starting_point]
-    non_treed = @points_by_name.dup - [starting_point]
     edges = []
-    until non_treed.empty?
-      minimum = treed.min_by {|point| point.minimum_edge }
-      unless self.class.has_cycle? treed
-        treed << minimum.b
-        non_treed -= [minimum.b]
-      end
+    @minimum_spanning_tree.each do |point, other|
+      edges << Edge.new point, other
     end
-  end
-  
-  def Graph.has_cycle? points
-    queue = Queue.new
-    queue << points.first
-    parents = {points.first.name => nil}
-    marked = {points.first.name => true}
-    until queue.empty?
-      point = queue.pop
-      return true if follow_parents(point, parents) == :cycle
-      point.edges.values.map(&:b).each do |other|
-        if !marked[other.name]
-          parents[other.name] = point
-          marked[other.name] = true
-          queue << other
-        end
-      end
-    end
-  end
-
-  def Graph.follow_parents point, parents
-    visited = []
-    until parents[point] == nil
-      if visited.include? point.name
-        return :cycle
-      else
-        visited << point.name
-        point = parents[point]
-      end
+    (k-1).times do |i|
+      
     end
   end
 end

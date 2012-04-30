@@ -12,7 +12,7 @@ class Partitioner
       num_sets, metric, points = Parser.parse! filename
       points = points.each_with_index.map {|p, i| Point.new i, *p }
       graph = Graph.new points
-      graph.prims metric
+      pp graph.prims metric
       
       #graph.cut! num_sets
     end
