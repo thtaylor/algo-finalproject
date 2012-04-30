@@ -2,7 +2,6 @@
 
 class Point
   attr_accessor :x, :y, :z, :name, :edges
-
   def initialize name, x, y, z = 0
   	@name, @x, @y, @z = name, x, y, z
     @edges = {}
@@ -21,7 +20,7 @@ class Point
   end
 
   def [] other
-    @edges[other.name]
+    @edges[other]
   end
 
   def []= other, edge
@@ -29,6 +28,10 @@ class Point
   end
 
   def to_s
-    @name
+    "Point: #{@name}"
+  end
+
+  def minimum_edge
+    @edges.min_by {|name, edge| edge.weight}.last
   end
 end

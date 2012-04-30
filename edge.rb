@@ -1,7 +1,5 @@
 #!/usr/bin/env ruby
 
-require 'point'
-
 class Edge
   attr_accessor :a, :b
 
@@ -14,6 +12,6 @@ class Edge
   end
 
   def to_s
-    "(#{@a.to_s}, #{@b.to_s})"
+    "Edge: (#{@a.to_s}, #{@b.to_s})"
   end
 end
